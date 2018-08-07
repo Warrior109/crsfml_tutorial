@@ -1,0 +1,13 @@
+name: snake_tutorial
+version: 0.1.0
+
+authors:
+  - Olexandr Hoshylyk <gashuk95@gmail.com>
+
+targets:
+  snake_tutorial:
+    main: src/snake_tutorial.cr
+
+crystal: 0.25.1
+
+license: MIT
