@@ -1,4 +1,7 @@
+require "crsfml"
 require "./components/snake"
+require "./components/textbox"
+require "./window.cr"
 
 class SnakeTutorial::Game
   getter window = SnakeTutorial::Window.new("Snake", SF.vector2(800, 600))
@@ -10,6 +13,8 @@ class SnakeTutorial::Game
     @increment = SF.vector2(400, 400)
     @world = SnakeTutorial::World.new(SF.vector2(800, 600))
     @snake = SnakeTutorial::Snake.new(@world.block_size)
+    @textbox = SnakeTutorial::Textbox.new
+    @textbox.add("Seeded random number generator with: lalka")
   end
 
   def handle_input
@@ -41,6 +46,7 @@ class SnakeTutorial::Game
     @window.begin_draw
     @world.render(@window.window)
     @snake.render(@window.window)
+    @textbox.render(@window.window)
     @window.end_draw
   end
 

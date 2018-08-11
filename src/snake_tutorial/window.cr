@@ -1,6 +1,11 @@
+require "crsfml"
+require "./event_manager"
+
 class SnakeTutorial::Window
   getter size = SF.vector2(640, 480)
   getter window = SF::RenderWindow.new
+  getter event_manager = SnakeTutorial::EventManager.new
+  @isFocused = true
   @title = "Window"
 
   def initialize
@@ -9,6 +14,10 @@ class SnakeTutorial::Window
 
   def initialize(title : String, size : SF::Vector2u)
     setup(title, size)
+  end
+
+  def focused?
+    @isFocused
   end
 
   def finalize
@@ -25,12 +34,16 @@ class SnakeTutorial::Window
 
   def update
     while event = @window.poll_event
-      if event.is_a? SF::Event::Closed
-        @isDone = true
-      elsif event.is_a? SF::Event::KeyPressed && SF::Keyboard.key_pressed?(SF::Keyboard::F5)
-        toggle_fullscreen
+      if event.is_a? SF::Event::LostFocus
+        @isFocused = false
+        @event_manager.focus = false
+      elsif event.is_a? SF::Event::GainedFocus
+        @isFocused = true
+        @event_manager.focus = true
       end
+      @event_manager.handle_event(event)
     end
+    @event_manager.update
   end
 
   def done?
@@ -41,10 +54,14 @@ class SnakeTutorial::Window
     @isFullscreen
   end
 
-  def toggle_fullscreen
+  def toggle_fullscreen(details : EventManager::EventDetails)
     @isFullscreen = !@isFullscreen
     destroy
     create
+  end
+
+  def close(details = nil)
+    @isDone = true
   end
 
   def draw(drawable : SF::Drawable)
@@ -52,8 +69,11 @@ class SnakeTutorial::Window
   end
 
   private def setup(@title : String, @size : SF::Vector2u)
+    @isFocused = true
     @isFullscreen = false
     @isDone = false
+    @event_manager.add_callback("fullscreen_toggle", ->toggle_fullscreen(EventManager::EventDetails))
+    @event_manager.add_callback("window_close", ->close(EventManager::EventDetails))
     create
   end
 
