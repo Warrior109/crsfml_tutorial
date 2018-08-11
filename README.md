@@ -1,6 +1,7 @@
 # snake_tutorial
 
-TODO: Write a description here
+https://play.google.com/store/books/details?id=_zjlCwAAQBAJ
+Examples from this book. Written on CRSFML 
 
 ## Installation
 
